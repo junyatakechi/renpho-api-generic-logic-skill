@@ -15,7 +15,7 @@ metadata:
 | | このスキル |
 |---|---|
 | 依存してよい環境 | 誰もが共有する環境だけ（RENPHO Health の非公式API `cloud.renpho.com`） |
-| 持たないもの | 判断の対象（測定のレコード）と、導入先の環境。認証情報はスキルの外の環境ファイルに置き、どこに記録するか・列名は呼び出し側が持つ |
+| 持たないもの | 判断の対象（測定のレコード）と、導入先の環境。認証情報はプロジェクトのフォルダ直下の `.env` に置き、どこに記録するか・列名は呼び出し側が持つ |
 | 持つ道具 | 手続きに使う道具だけ（APIとの通信と、値の変換）。判断に使う道具は持たない |
 | 共有するとき | 混ぜて1つに育てる。新しく踏んだ落とし穴（別の機種の項目・プロトコルの変化）は、判断として足していく |
 
@@ -40,7 +40,7 @@ metadata:
 
 ## 道具
 
-道具は `scripts/` にある。どれも手続きに使う道具で、呼び出し側が手続きの中で使う。`renpho_api.py`・`renpho_env.py` はスキルの外を読み書きし（RENPHOとの通信・環境ファイル）、`renpho_records.py` は値の変換だけをする。**Pythonから使うなら常にimport、シェルからならスクリプトを起動する**（理由は [client-usage.md](references/client-usage.md)）。
+道具は `scripts/` にある。どれも手続きに使う道具で、呼び出し側が手続きの中で使う。`renpho_api.py`・`renpho_env.py` はスキルの外を読み書きし（RENPHOとの通信・`.env`）、`renpho_records.py` は値の変換だけをする。**Pythonから使うなら常にimport、シェルからならスクリプトを起動する**（理由は [client-usage.md](references/client-usage.md)）。
 
 - **呼び出し側は道具を写さず、自前の薄いラッパーも持たない。** クライアントの入口は `renpho_env.open_client()` に1つだけ置く。
 - **道具で強制できる判断は、道具の中に実装してある。** 保存済みtokenの使い回し・ログインしたときのtokenの保存とログ・403のときの一度だけの再ログイン・新しい順への並べ替え・単位の確定・欠測の除外・IDの文字列化で、理由は判断ファイルに書いてある。強制できない判断（記録先が新しければ接続しない、など）は、このスキルが答えとして伝え、呼び出し側が守る。
@@ -96,13 +96,13 @@ rows = [renpho_records.normalize(r) for r in renpho_records.collapse_sessions(cl
 
 ### シェルから起動するスクリプト
 
-いずれも `~/.claude-skills-env/renpho-api-generic-logic.env` から認証情報を読む。別のファイルを一時的に使いたいときは、環境変数 `RENPHO_ENV_FILE` にファイルの絶対パスを渡す。
+いずれも環境変数、無ければ起動フォルダ（プロジェクトのフォルダ直下）の `.env` から `RENPHO_*` を読み、ログインしたら `.env` の `RENPHO_TOKEN`・`RENPHO_USER_ID` の行だけを書き換える。プロジェクトのフォルダから `<skill-dir>/scripts/...` の形で起動し、スキルのフォルダへ cd しない。
 
 | スクリプト | 中身 |
 |---|---|
-| `uv run scripts/renpho_auth.py init` | 環境ファイルの雛形を作り、書き込む手順を案内する。パスワードは受け取らない |
-| `uv run scripts/renpho_auth.py check` | 疎通と取得件数を確かめる。保存済みtokenがあればログインしない |
-| `uv run scripts/probe_fields.py [--limit 3] [--json 保存先]` | 実際に値が入っている項目と、常に空の項目を出す。どこにも書き込まない |
+| `uv run <skill-dir>/scripts/renpho_auth.py init` | 起動フォルダの `.env` に `RENPHO_*` の空の行を足し、書き込む手順を案内する。パスワードは受け取らない |
+| `uv run <skill-dir>/scripts/renpho_auth.py check` | 疎通と取得件数を確かめる。保存済みtokenがあればログインしない |
+| `uv run <skill-dir>/scripts/probe_fields.py [--limit 3] [--json 保存先]` | 実際に値が入っている項目と、常に空の項目を出す。どこにも書き込まない |
 
 ## 索引
 
@@ -136,17 +136,17 @@ rows = [renpho_records.normalize(r) for r in renpho_records.collapse_sessions(cl
 | 却下した案 | 選ばなかった案と、その理由。記録が無ければ「記録なし」と書く |
 | 当てはまる範囲と限界 | どこまで使えるか |
 
-- **導入先の環境は書かない。** 認証情報・どこに記録するか・列名は、呼び出し側か環境ファイルが持つ。
+- **導入先の環境は書かない。** 認証情報・どこに記録するか・列名は、呼び出し側か `.env` が持つ。
 - **環境の仕様に合わせた値は、道具のコードの定数が正。** ホスト・鍵・エンドポイント・シャード数のような値は、人が決めるものではないので判断ファイルに値の表として置かない。判断の本文から「`renpho_api.py` の定数が正」と指す。
 - **道具は値の表を読まない。** 多くのスキルが読み込むたびにimportするので、表の書き損じ1つで、使うすべてのスキルが止まるため。作成者が決めた値（同じ測定とみなす間隔・丸めの桁）は `renpho_records.py` に定数として置き、表は写しとして残し、決めた理由を判断ファイルに書く。
 
 ## 設定が無いとき → README の「セットアップ」
 
-認証情報は導入先の環境なので、スキルの外に置く。環境ファイルの作成とパスワードの書き込みは人の手作業で、手順は README の「セットアップ」だけが持つ。次の合図が出たら先へ進まず、README の「セットアップ」をユーザーに案内する。**パスワードをチャットで受け取らない。**
+認証情報は導入先の環境なので、スキルの外に置く。`.env` への雛形の追加とパスワードの書き込みは人の手作業で、手順は README の「セットアップ」だけが持つ。次の合図が出たら先へ進まず、README の「セットアップ」をユーザーに案内する。**パスワードをチャットで受け取らない。**
 
 | 合図 | 足りないもの |
 |---|---|
-| `RenphoAuthError`（`RENPHO_EMAIL / RENPHO_PASSWORD が設定されていません。`） | `~/.claude-skills-env/renpho-api-generic-logic.env`、またはその中の `RENPHO_EMAIL`・`RENPHO_PASSWORD` |
+| `RenphoAuthError`（`RENPHO_EMAIL / RENPHO_PASSWORD が設定されていません。`） | 起動フォルダの `.env`、またはその中の `RENPHO_EMAIL`・`RENPHO_PASSWORD` |
 | `RenphoAuthError`（`RENPHOへのログインに失敗しました`） | 正しいメールアドレス・パスワード。RENPHO Health（青いアイコン）のアカウントであること |
 
 ## 未決

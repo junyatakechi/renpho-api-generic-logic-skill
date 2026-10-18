@@ -6,7 +6,7 @@
 """renpho-api-generic-logic: RENPHO認証情報のセットアップと疎通確認。
 
 使い方:
-  uv run scripts/renpho_auth.py init    # .envの雛形を作り、書き込み手順を案内する
+  uv run scripts/renpho_auth.py init    # 起動フォルダの.envにRENPHO_*の空の行を足し、書き込み手順を案内する
   uv run scripts/renpho_auth.py check   # 疎通と取得件数を確認する(保存済みtokenがあればログインしない)
 
 `init`はメールアドレス・パスワードを**受け取らない**。雛形を作るだけで、実際の値は
@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from renpho_api import RenphoError  # noqa: E402
-from renpho_env import env_path, load, open_client, save  # noqa: E402
+from renpho_env import KEYS, env_path, load, open_client, read_file, write  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -25,13 +25,15 @@ if hasattr(sys.stdout, "reconfigure"):
 
 def cmd_init(path):
     creds = load(path)
-    if os.path.isfile(path):
-        print(f"既にあります: {path}")
-        print(f"  RENPHO_EMAIL    = {creds['email'] or '(未設定)'}")
-        print(f"  RENPHO_PASSWORD = {'(設定済み)' if creds['password'] else '(未設定)'}")
+    # .env は他のスキルと共有なので、無い RENPHO_* の行だけを空で足す。ある行は書き換えない。
+    missing = [k for k in KEYS if k not in read_file(path)]
+    if missing:
+        write({k: "" for k in missing}, path)
+        print(f"雛形の行を足しました: {path}({', '.join(missing)})")
     else:
-        save({"email": "", "password": "", "user_id": ""}, path)
-        print(f"雛形を作成しました: {path}")
+        print(f"既にあります: {path}")
+    print(f"  RENPHO_EMAIL    = {creds['email'] or '(未設定)'}")
+    print(f"  RENPHO_PASSWORD = {'(設定済み)' if creds['password'] else '(未設定)'}")
 
     if not (creds["email"] and creds["password"]):
         print()

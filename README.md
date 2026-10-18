@@ -14,7 +14,7 @@ Claudeに頼むと、スマホアプリを何度もログアウトさせたり�
 
 - **RENPHOに公式APIは無い。** このスキルが叩くのはRENPHO Healthアプリの内部APIで、予告なく壊れる。
 - **RENPHOは、1つのアカウントに1つのセッションしか持てない。** 初めてログインしたとき（と、90日でtokenが切れたとき）に、スマホアプリがログアウトされる。以降は保存したtokenを使い回すので、ログインは起きない。
-- **環境ファイルには、RENPHOアカウントのパスワードそのものが入る。** 他のサービスと使い回していないパスワードにする。
+- **`.env` には、RENPHOアカウントのパスワードそのものが入る。** 他のサービスと使い回していないパスワードにする。
 - RENPHO Health（青いアイコン）のアカウントで使う。旧Renphoアプリのアカウントでは動かない。
 
 ## 必要なもの
@@ -35,14 +35,14 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic.git ~/.claude
 
 ## セットアップ
 
-1. 認証情報のファイルの雛形を作る。`~/.claude-skills-env/renpho-api-generic-logic.env` ができる。
+1. 認証情報の雛形を作る。プロジェクトのフォルダ直下（Claude Code を起動するフォルダ）の `.env` に `RENPHO_*` の空の行が足される（`.env` が無ければ作られ、他のキーの行はそのまま残る）。以下のコマンドは、どれもプロジェクトのフォルダで実行する。
 
    ```bash
-   cd ~/.claude/skills/renpho-api-generic-logic
-   uv run scripts/renpho_auth.py init
+   cd <プロジェクトのフォルダ>
+   uv run ~/.claude/skills/renpho-api-generic-logic/scripts/renpho_auth.py init
    ```
 
-2. できたファイルをエディタで開き、自分で値を書き込む。**パスワードはClaudeに渡さない。** キーの名前は同梱の `.env.example` と同じ。
+2. `.env` をエディタで開き、自分で値を書き込む。**パスワードはClaudeに渡さない。** キーの名前は同梱の `.env.example` と同じ。
 
    ```
    RENPHO_EMAIL=<RENPHO Healthのメールアドレス>
@@ -56,7 +56,7 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic.git ~/.claude
 3. 疎通を確かめる。保存済みのtokenが無ければここで一度ログインし、スマホアプリがログアウトされる。
 
    ```bash
-   uv run scripts/renpho_auth.py check
+   uv run ~/.claude/skills/renpho-api-generic-logic/scripts/renpho_auth.py check
    ```
 
 ## 使い方

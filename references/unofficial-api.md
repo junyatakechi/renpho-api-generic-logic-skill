@@ -20,8 +20,8 @@
 
 ## 道具
 
-- `uv run scripts/renpho_auth.py check`：`debug=True` で、エンドポイントごとの `code` と `msg` を出す。
-- `uv run scripts/probe_fields.py --json <保存先>`：応答の形が変わっていないかを、全件で確かめる。
+- `uv run <skill-dir>/scripts/renpho_auth.py check`：`debug=True` で、エンドポイントごとの `code` と `msg` を出す。
+- `uv run <skill-dir>/scripts/probe_fields.py --json <保存先>`：応答の形が変わっていないかを、全件で確かめる。
 
 ## 理由
 

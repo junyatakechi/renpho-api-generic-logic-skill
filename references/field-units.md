@@ -39,7 +39,7 @@
 ## 道具
 
 - 意味・単位・丸めの桁は `renpho_records.FIELDS` が持つ。`normalize(record)` は、このキーのうち有効な値だけを返す。
-- 答え5は `uv run scripts/probe_fields.py --limit 3`。全件を走査し、値が入っている項目と、常に空の項目を出す。どこにも書き込まない。
+- 答え5は `uv run <skill-dir>/scripts/probe_fields.py --limit 3`。全件を走査し、値が入っている項目と、常に空の項目を出す。どこにも書き込まない。
 
 ## 値
 
