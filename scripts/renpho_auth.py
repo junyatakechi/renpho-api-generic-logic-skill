@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pycryptodome>=3.15"]
 # ///
-"""renpho-api-generic-logic: RENPHO認証情報のセットアップと疎通確認。
+"""renpho-api-generic-logic-skill: RENPHO認証情報のセットアップと疎通確認。
 
 使い方:
   uv run scripts/renpho_auth.py init    # 起動フォルダの.envにRENPHO_*の空の行を足し、書き込み手順を案内する

@@ -1,4 +1,4 @@
-# renpho-api-generic-logic
+# renpho-api-generic-logic-skill
 
 RENPHO Health（体組成計）の非公式APIをClaudeから扱うための、generic-logic スキル。
 Claudeに頼むと、スマホアプリを何度もログアウトさせたり、単位を取り違えたりする落とし穴を避けながら、体組成計の測定を取得する。
@@ -28,7 +28,7 @@ Claudeに頼むと、スマホアプリを何度もログアウトさせたり�
 スキルのフォルダでクローンする。フォルダ名はリポジトリ名のままでよい。
 
 ```bash
-git clone https://github.com/junyatakechi/renpho-api-generic-logic.git ~/.claude/skills/renpho-api-generic-logic
+git clone https://github.com/junyatakechi/renpho-api-generic-logic-skill.git ~/.claude/skills/renpho-api-generic-logic-skill
 ```
 
 特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/` の中でクローンする。
@@ -39,7 +39,7 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic.git ~/.claude
 
    ```bash
    cd <プロジェクトのフォルダ>
-   uv run ~/.claude/skills/renpho-api-generic-logic/scripts/renpho_auth.py init
+   uv run ~/.claude/skills/renpho-api-generic-logic-skill/scripts/renpho_auth.py init
    ```
 
 2. `.env` をエディタで開き、自分で値を書き込む。**パスワードはClaudeに渡さない。** キーの名前は同梱の `.env.example` と同じ。
@@ -56,7 +56,7 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic.git ~/.claude
 3. 疎通を確かめる。保存済みのtokenが無ければここで一度ログインし、スマホアプリがログアウトされる。
 
    ```bash
-   uv run ~/.claude/skills/renpho-api-generic-logic/scripts/renpho_auth.py check
+   uv run ~/.claude/skills/renpho-api-generic-logic-skill/scripts/renpho_auth.py check
    ```
 
 ## 使い方
@@ -70,7 +70,7 @@ Claudeに普段の言葉で頼むと、Claudeがこのスキルを読み込ん�
 | 「RENPHOが返す項目を調べて」 | 実際に値が入っている項目と、常に空の項目を出す |
 | 「RENPHOのAPIが壊れた」 | 認証の失敗かプロトコルの破損かを見分け、どこを見て直すかを答える |
 
-取った測定をNotionに記録するのは、アプリケーションスキル（renpho-collection-app など）の担当。
+取った測定をNotionに記録するのは、アプリケーションスキル（renpho-collection-app-skill など）の担当。
 
 ## 他のスキルから使う
 
@@ -78,7 +78,7 @@ RENPHOの測定を取るスキルを作るときは、このスキルのモジ�
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.expanduser("~/.claude/skills/renpho-api-generic-logic/scripts"))
+sys.path.insert(0, os.path.expanduser("~/.claude/skills/renpho-api-generic-logic-skill/scripts"))
 from renpho_api import RenphoError
 from renpho_env import open_client
 import renpho_records

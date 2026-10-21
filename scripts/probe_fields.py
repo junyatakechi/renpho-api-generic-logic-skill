@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pycryptodome>=3.15"]
 # ///
-"""renpho-api-generic-logic: RENPHOが実際に返してくる項目を調べる(読むだけ)。
+"""renpho-api-generic-logic-skill: RENPHOが実際に返してくる項目を調べる(読むだけ)。
 
 使い方:
   uv run scripts/probe_fields.py [--limit 3] [--json out.json]

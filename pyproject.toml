@@ -1,5 +1,5 @@
 [project]
-name = "renpho-api-generic-logic"
+name = "renpho-api-generic-logic-skill"
 version = "0.1.0"
 description = "RENPHO Health の非公式APIを扱うときの一般的な判断と、APIを呼ぶ道具を持つ generic-logic スキル"
 requires-python = ">=3.11"

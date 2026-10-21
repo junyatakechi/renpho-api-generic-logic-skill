@@ -1,4 +1,4 @@
-"""renpho-api-generic-logic: RENPHOのレコードを、意味と単位の確定した値へ変換する(値の変換だけ)。
+"""renpho-api-generic-logic-skill: RENPHOのレコードを、意味と単位の確定した値へ変換する(値の変換だけ)。
 
 通信はしない。`renpho_api.RenphoClient.get_measurements()` が返したレコードを受け取り、
 RENPHO側の事情(測定時刻・単位・欠測・同一測定の重複・IDの桁)を吸収した値を返す。

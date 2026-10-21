@@ -1,4 +1,4 @@
-"""renpho-api-generic-logic: Renpho Health API(非公式)のクライアント。
+"""renpho-api-generic-logic-skill: Renpho Health API(非公式)のクライアント。
 
 このモジュールは**他スキルから直接importして使う公開モジュール**(references/client-usage.md)。
 
@@ -152,7 +152,7 @@ class RenphoClient:
         if not self.email or not self.password:
             raise RenphoAuthError(
                 "RENPHO_EMAIL / RENPHO_PASSWORD が設定されていません。"
-                "renpho-api-generic-logic の README「セットアップ」に従ってください。"
+                "renpho-api-generic-logic-skill の README「セットアップ」に従ってください。"
             )
         payload = {
             "questionnaire": {},

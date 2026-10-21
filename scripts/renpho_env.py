@@ -1,4 +1,4 @@
-"""renpho-api-generic-logic: RENPHO認証情報の .env 形式読み書きと、クライアントの入口。
+"""renpho-api-generic-logic-skill: RENPHO認証情報の .env 形式読み書きと、クライアントの入口。
 
 保存先は起動フォルダ(作業ディレクトリ)の `.env`(KEY=VALUE形式)。プロジェクトのスキルは
 この1つを共有するので、書き込むときは RENPHO_* の行だけを書き換え、他の行はそのまま残す。
@@ -21,7 +21,7 @@ KEYS = ("RENPHO_EMAIL", "RENPHO_PASSWORD", "RENPHO_USER_ID", "RENPHO_TOKEN")
 
 # 初めて RENPHO_* の行を足すときに、その上に置く説明。
 _HEADER = (
-    "# renpho-api-generic-logic の認証情報",
+    "# renpho-api-generic-logic-skill の認証情報",
     "# RENPHO Healthアプリにログインしているメールアドレスとパスワードを入れる。",
     "# RENPHO_USER_ID は空でよい(初回ログイン時に自動で判別できる)。",
     "# RENPHO_TOKEN も空でよい(初回ログイン時に自動で保存される)。",

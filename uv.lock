@@ -42,7 +42,7 @@ wheels = [
 ]
 
 [[package]]
-name = "renpho-api-generic-logic"
+name = "renpho-api-generic-logic-skill"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

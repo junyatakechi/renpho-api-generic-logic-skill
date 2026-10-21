@@ -1,9 +1,9 @@
 ---
-name: renpho-api-generic-logic
+name: renpho-api-generic-logic-skill
 description: "文脈: RENPHO API。種類: 一般的な業務領域の判断。使う場面: この文脈の判断を直接聞かれたときに使う。この文脈の作業の前に読み、索引の「いつ聞くか」に当たる判断を聞く。"
 metadata:
-  version: "0.1.1"
-  repository: "https://github.com/junyatakechi/renpho-api-generic-logic"
+  version: "0.2.0"
+  repository: "https://github.com/junyatakechi/renpho-api-generic-logic-skill"
 ---
 
 # RENPHO Health APIの一般的な判断
@@ -48,7 +48,7 @@ metadata:
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "renpho-api-generic-logic", "scripts")))
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "renpho-api-generic-logic-skill", "scripts")))
 from renpho_api import RenphoError
 from renpho_env import open_client
 import renpho_records
