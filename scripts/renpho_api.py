@@ -28,7 +28,7 @@ from Crypto.Util.Padding import pad, unpad
 
 API_BASE_URL = "https://cloud.renpho.com"
 ENCRYPTION_KEY = b"ed*wijdi$h6fe3ew"  # 16byte固定鍵(AES-128)
-APP_VERSION = "6.6.0"
+APP_VERSION = "7.0.0"  # 6.6.0 のままだと、正しい認証情報でも code=104 が返る(2026-10)
 PLATFORM = "android"
 SYSTEM_TYPE = "11"
 
@@ -110,11 +110,12 @@ class RenphoClient:
         data = json.dumps(body).encode("utf-8")
         req = urllib.request.Request(url, data=data, method="POST")
         req.add_header("Content-Type", "application/json")
+        # ログインにも付ける。無いとログインの本文を復号できず code=-114 が返る(2026-10)。
+        req.add_header("appVersion", APP_VERSION)
+        req.add_header("platform", PLATFORM)
         if auth and self.token:
             req.add_header("token", self.token)
             req.add_header("userId", str(self.user_id))
-            req.add_header("appVersion", APP_VERSION)
-            req.add_header("platform", PLATFORM)
         try:
             with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT_SEC) as resp:
                 result = json.loads(resp.read().decode("utf-8"))
@@ -122,7 +123,7 @@ class RenphoClient:
             detail = e.read().decode("utf-8", errors="replace")
             raise RenphoAPIError(endpoint, e.code, detail) from None
         if self.debug:
-            print(f"  POST {endpoint} -> code={result.get('code')} msg={result.get('msg')}")
+            print(f"  POST {endpoint} -> code={result.get('code')} msg={self._message(result)}")
 
         # 保存済みtokenが無効化されていた場合だけ、ここで一度だけログインし直す。
         # アプリ側が後からログインすると、こちらのtokenは403になる(単一セッション制約)。
@@ -139,11 +140,16 @@ class RenphoClient:
         return str(result.get("code")) == "403"
 
     @staticmethod
-    def _check(result, context):
+    def _message(result):
+        """応答の説明文。RENPHOは`msg`のほか`message`で返すことがある(2026-10)。"""
+        return result.get("msg") or result.get("message") or ""
+
+    @classmethod
+    def _check(cls, result, context):
         code = result.get("code")
-        msg = str(result.get("msg", ""))
-        # 成功時のcodeは実装によって0/200/"0"のゆらぎがあるため、msgも見る。
-        if msg.lower() == "success" or code in (0, 200, "0", "200"):
+        msg = str(cls._message(result))
+        # 成功時のcodeは実装によって0/200/101のゆらぎがあるため、msgも見る。
+        if msg.lower() == "success" or str(code) in ("0", "200", "101"):
             return
         raise RenphoAPIError(context, code, msg)
 

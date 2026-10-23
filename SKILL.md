@@ -2,7 +2,7 @@
 name: renpho-api-generic-logic-skill
 description: "文脈: RENPHO API。種類: 一般的な業務領域の判断。使う場面: この文脈の判断を直接聞かれたときに使う。この文脈の作業の前に読み、索引の「いつ聞くか」に当たる判断を聞く。"
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   repository: "https://github.com/junyatakechi/renpho-api-generic-logic-skill"
 ---
 

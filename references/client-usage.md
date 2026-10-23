@@ -42,7 +42,7 @@ rows = [renpho_records.normalize(r) for r in records]
 | ホスト | `https://cloud.renpho.com` |
 | 暗号化 | 全ペイロードをAES-128-ECB + PKCS7 → base64 し、`{"encryptData": "..."}` で包む |
 | ログイン | `renpho-aggregation/user/login`（email+password） → 応答の `login.token` と `login.id` |
-| 以降の認証 | ヘッダに `token` / `userId` / `appVersion` / `platform` |
+| ヘッダ | すべての要求（ログインを含む）に `appVersion` / `platform`。ログインのあとは `token` / `userId` も |
 | 測定データ | `RenphoHealth/scale/queryBodyCompositionMeasureData`、空なら `queryAllMeasureDataList` |
 | シャード | 測定は24テーブルに分散。`measurements_info_{user_id % 24}` |
 | ページング | 1ページが埋まらなかったら最後。総件数は当てにしない |
