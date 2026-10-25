@@ -1,6 +1,6 @@
 [project]
 name = "renpho-api-generic-logic-skill"
-version = "0.2.1"
+version = "0.2.2"
 description = "RENPHO Health の非公式APIを扱うときの一般的な判断と、APIを呼ぶ道具を持つ generic-logic スキル"
 requires-python = ">=3.11"
 # RENPHOの非公式APIはリクエスト/レスポンスをAES-128(ECB)で暗号化しており、

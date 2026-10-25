@@ -1,8 +1,8 @@
 ---
 name: renpho-api-generic-logic-skill
-description: "文脈: RENPHO API。種類: 一般的な業務領域の判断。使う場面: この文脈の判断を直接聞かれたときに使う。この文脈の作業の前に読み、索引の「いつ聞くか」に当たる判断を聞く。"
+description: "文脈: RENPHO API。種類: 一般的な業務領域の判断。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
   repository: "https://github.com/junyatakechi/renpho-api-generic-logic-skill"
 ---
 
@@ -34,7 +34,7 @@ metadata:
 - 必須の材料が無ければ、答えずに足りない材料を返す。必須でない材料が無ければ、何が無かったために何を言えなかったかを添えて答える。
 - 判断ファイルで答えられない聞きたい事には、一般論で答えず「判断が無い」と返す。新しい落とし穴を踏んだら、判断として足す。
 - 判断のファイルに「未決」とある箇所に当たったら、未決であることを答えに含める。
-- **このスキルの答えには、道具の使い方を含めることが多い。** 索引の「いつ聞くか」に当たったら、呼び出し側は聞きたい事・判断先・欲しい答えの形を伝えて聞き、返ってきた使い方に従って道具を自分で呼ぶ。
+- **このスキルの答えには、道具の使い方を含めることが多い。** 索引の「扱うこと」に当たる作業をするときは、呼び出し側は聞きたい事・判断先・欲しい答えの形を伝えて聞き、返ってきた使い方に従って道具を自分で呼ぶ。
 - **このスキルは判断して答えるだけで、手続きは代わりに行わない。** 手続きに使う道具は、呼び出し側が `scripts/` から自分で呼び、手続きの結果か例外を受け取る。
 - 認証の設定・疎通の確認・項目の確認は、ユーザーから直接頼まれることもある（[認証情報の扱い](references/credentials.md)・[項目の意味と単位](references/field-units.md)）。
 
@@ -106,17 +106,17 @@ rows = [renpho_records.normalize(r) for r in renpho_records.collapse_sessions(cl
 
 ## 索引
 
-| 判断 | ファイル | 扱うこと | 依存する判断 | いつ聞くか |
-|---|---|---|---|---|
-| セッションとトークン | [session.md](references/session.md) | ログインでアプリが落ちるのを、どう最小にするか | — | RENPHOに接続するコードを書く前・同期を呼ぶ頻度を決めるとき |
-| 認証情報の扱い | [credentials.md](references/credentials.md) | パスワード本体を、どこに、誰が書くか | — | 認証情報を設定する前・疎通を確かめるとき |
-| APIの呼び方 | [client-usage.md](references/client-usage.md) | どの入口から呼び、何を呼び出し側で書かないか | セッションとトークン | RENPHOを読むコードを書く前 |
-| 測定時刻 | [measured-time.md](references/measured-time.md) | どの項目を測定時刻とするか | — | 測定の日付・時刻を記録する前・期間で絞る前 |
-| 項目の意味と単位 | [field-units.md](references/field-units.md) | どのキーが何で、単位は何か。どの項目に列を作るか | — | 項目を記録先の列に対応付ける前・列を足す前 |
-| 1回の測定で残る複数のレコード | [session-collapse.md](references/session-collapse.md) | 同じ測定の重複をどう畳むか | 測定時刻 | 測定を記録する前・平均を取る前 |
-| 体組成が空のレコード | [missing-composition.md](references/missing-composition.md) | 体組成が0で返る測定をどう記録するか | — | 測定を記録する前 |
-| レコードIDの持ち方 | [record-id.md](references/record-id.md) | IDの型と、重複を防ぐ一意キー | — | 記録先にIDの列を作る前・差分を取る処理を書く前 |
-| 非公式APIが壊れたとき | [unofficial-api.md](references/unofficial-api.md) | 失敗の見分け方と、どこを見て直すか | 認証情報の扱い | APIが失敗したとき・応答の形が変わったとき |
+| 判断 | ファイル | 扱うこと | 依存する判断 |
+|---|---|---|---|
+| セッションとトークン | [session.md](references/session.md) | RENPHOに接続するコードを書く・同期を呼ぶ頻度を決めるとき、ログインでアプリが落ちるのをどう最小にするか | — |
+| 認証情報の扱い | [credentials.md](references/credentials.md) | 認証情報を設定する・疎通を確かめるとき、パスワード本体を、どこに、誰が書くか | — |
+| APIの呼び方 | [client-usage.md](references/client-usage.md) | RENPHOを読むコードを書くとき、どの入口から呼び、何を呼び出し側で書かないか | セッションとトークン |
+| 測定時刻 | [measured-time.md](references/measured-time.md) | 測定の日付・時刻を記録する・期間で絞るとき、どの項目を測定時刻とするか | — |
+| 項目の意味と単位 | [field-units.md](references/field-units.md) | 項目を記録先の列に対応付ける・列を足すとき、どのキーが何で、単位は何か。どの項目に列を作るか | — |
+| 1回の測定で残る複数のレコード | [session-collapse.md](references/session-collapse.md) | 測定を記録する・平均を取るとき、同じ測定の重複をどう畳むか | 測定時刻 |
+| 体組成が空のレコード | [missing-composition.md](references/missing-composition.md) | 測定を記録するとき、体組成が0で返る測定をどう記録するか | — |
+| レコードIDの持ち方 | [record-id.md](references/record-id.md) | 記録先にIDの列を作る・差分を取る処理を書くとき、IDをどの型で持ち、何を一意キーにして重複を防ぐか | — |
+| 非公式APIが壊れたとき | [unofficial-api.md](references/unofficial-api.md) | APIが失敗したとき・応答の形が変わったとき、失敗をどう見分け、どこを見て直すか | 認証情報の扱い |
 
 ## 依存の順
 
