@@ -11,6 +11,15 @@
 tokenを必ず保存することの両方を、ここで済ませる(references/session.md)。
 呼び出し側が `RenphoClient` を直接組み立てると、どちらかを忘れたときに
 スマホアプリが同期のたびに強制ログアウトされる。
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。
+
+公開する関数:
+  open_client(path=None, log=None, debug=False)   保存済みtokenを渡し、ログインしたらtokenを保存して log に出すクライアント。認証はまだ済ませない
+  env_path(path=None)                             使う .env のパス
+  read_file(path=None)                            .env の KEY=VALUE を dict で返す(環境変数は見ない)
+  load(path=None)                                 .env を読み、同じキーの環境変数で上書きして dict で返す
+  save_session(token, user_id, path=None)         token と user_id の行だけを書き換える
+  write(updates, path=None)                       .env の updates のキーの行だけを書き換え、無いキーは末尾に足す
 """
 import os
 import sys

@@ -17,6 +17,17 @@ RENPHOに公式APIは無い。ここで叩いているのはRENPHO Healthアプ�
 
 `requests`は使わず標準ライブラリのurllibで書いている(依存を増やさないため)。
 AESだけは標準ライブラリに無いので pycryptodome を使う。
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。クライアントは renpho_env.open_client() から作る。
+
+公開するクラスとメソッド:
+  RenphoClient(...)                          APIクライアント。直接組み立てず open_client() を使う
+  client.ensure_auth()                       保存済みtokenがあればログインしない。無ければ一度ログインする
+  client.get_measurements(user_id=None, page_size=50, max_pages=200)   測定を全件、新しい順で返す
+  client.get_device_info()                   紐付いている機器の情報。取れなければ None
+  client.measurement_table(user_id=None)     測定が入っているシャードのテーブル名
+  client.login()                             呼び出し側からは呼ばない(呼ぶたびにスマホアプリがログアウトされる。references/session.md)
+
+例外: RenphoError(基底)・RenphoAuthError(認証情報が無い・ログインを拒否された)・RenphoAPIError(.code・.msg)
 """
 import base64
 import json

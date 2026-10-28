@@ -15,6 +15,16 @@ RENPHO側の事情(測定時刻・単位・欠測・同一測定の重複・ID�
 作成者が決めた値(`SESSION_WINDOW_MIN`・丸めの桁)は、判断ファイルの表ではなくここに定数で置く。
 このモジュールは他スキルが読み込むたびにimportするので、表の書き損じ1つで
 使うすべてのスキルが止まるのを避けるため。決めた理由は判断ファイルにある。
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。
+
+公開する関数と定数:
+  normalize(record)                                       {"id", "measured_at", "has_body_composition", "values"}。values はRENPHOのキー → 丸めた値で、有効な値だけ
+  collapse_sessions(records, window_minutes=SESSION_WINDOW_MIN)   同じ測定の連続したレコードを、最後の1件に集約する
+  measured_at(record)                                     測定時刻(JST)
+  has_body_composition(record)                            体組成があるか
+  record_id(record)                                       レコードID(文字列)
+  FIELDS / FIELD_KEYS                                     RENPHOのキー・意味・単位・丸めの桁
+  SESSION_WINDOW_MIN                                      同じ測定とみなす間隔(分)
 """
 from datetime import datetime, timedelta, timezone
 
