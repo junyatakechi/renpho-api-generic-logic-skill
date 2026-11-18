@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from renpho_api import RenphoError  # noqa: E402
-from renpho_env import KEYS, env_path, load, open_client, read_file, write  # noqa: E402
+from renpho_env import KEYS, env_path, load, open_client, read_file, token_issued_at, write  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -55,6 +55,9 @@ def cmd_check(path):
     client.ensure_auth()
     print(f"  OK  user_id={client.user_id}")
     print(f"      測定テーブル={client.measurement_table()}")
+    issued = token_issued_at(client.token)
+    print(f"      tokenの発行={issued.isoformat(timespec='minutes') if issued else '(読めない)'}"
+          f"{'(この実行でログインした)' if client.logged_in else ''}")
 
     info = client.get_device_info()
     if info:

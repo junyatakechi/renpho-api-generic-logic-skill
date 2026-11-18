@@ -20,11 +20,20 @@ importの仕方は SKILL.md の「手続きに使う道具」にある(ここに
   load(path=None)                                 .env を読み、同じキーの環境変数で上書きして dict で返す
   save_session(token, user_id, path=None)         token と user_id の行だけを書き換える
   write(updates, path=None)                       .env の updates のキーの行だけを書き換え、無いキーは末尾に足す
+  token_issued_at(token)                          tokenの発行時刻(JST)。JWTの iat を読む。読めなければ None
+
+open_client() が返すクライアントの `logged_in` は、この実行でログインしたか(保存済みtokenで
+通ったなら False)。測定がまだ上がっていないかを見分けるのに使う(references/upload-timing.md)。
 """
+import base64
+import json
 import os
 import sys
+from datetime import datetime, timedelta, timezone
 
 from renpho_api import RenphoClient
+
+JST = timezone(timedelta(hours=9))
 
 KEYS = ("RENPHO_EMAIL", "RENPHO_PASSWORD", "RENPHO_USER_ID", "RENPHO_TOKEN")
 
@@ -136,13 +145,34 @@ def open_client(path=None, log=None, debug=False):
     path = env_path(path)
     creds = load(path)
     say = log or _stderr
+    holder = {}
 
     def _on_login(token, uid):
         save_session(token, uid, path)
-        say("※ RENPHOにログインしました。スマホアプリ側のセッションはここで切れます")
+        holder["client"].logged_in = True
+        say("※ RENPHOにログインしました。スマホアプリ側のセッションはここで切れます。"
+            "アプリでログインし直すまで、新しい測定はRENPHOに上がりません")
 
-    return RenphoClient(
+    client = RenphoClient(
         creds["email"], creds["password"], debug=debug,
         token=creds["token"], user_id=creds["user_id"] or None,
         on_login=_on_login,
     )
+    client.logged_in = False
+    holder["client"] = client
+    return client
+
+
+def token_issued_at(token):
+    """tokenの発行時刻(JST)。JWTの iat を読む。読めなければ None。tokenそのものは返さない。
+
+    保存済みtokenで通ったなら、スマホアプリはこの時刻のあとログインしていない
+    (references/session.md・references/upload-timing.md)。
+    """
+    try:
+        payload = token.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        iat = json.loads(base64.urlsafe_b64decode(payload))["iat"]
+        return datetime.fromtimestamp(int(iat), JST)
+    except (AttributeError, IndexError, KeyError, TypeError, ValueError):
+        return None

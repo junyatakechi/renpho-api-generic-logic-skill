@@ -2,7 +2,7 @@
 name: renpho-api-generic-logic-skill
 description: "文脈: RENPHO API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.2.5"
+  version: "0.2.6"
   repository: "https://github.com/junyatakechi/renpho-api-generic-logic-skill"
   design: "人の判断を切り出すAIスキルの設計_v2.0.0"
   design-url: "https://app.notion.com/p/jay-t/AI-3eaf2fd6925e8102b86fee3b6b3dd5a3"
@@ -14,13 +14,14 @@ metadata:
 |---|---|---|---|---|
 | セッションとトークン | RENPHOに接続するコードを書く・同期を呼ぶ頻度を決めるとき、ログインでアプリが落ちるのをどう最小にするか | [session.md](references/session.md) | — | — |
 | 認証情報の扱い | 認証情報を設定する・疎通を確かめるとき、パスワード本体を、どこに、誰が書くか | [credentials.md](references/credentials.md) | — | — |
-| APIの呼び方 | RENPHOを読むコードを書くとき、どの入口から呼び、何を呼び出し側で書かないか | [client-usage.md](references/client-usage.md) | セッションとトークン | — |
+| APIの呼び方 | RENPHOを読むコードを書くとき、どの入口から呼び、何を呼び出し側で書かないか | [client-usage.md](references/client-usage.md) | `session.md` | — |
 | 測定時刻 | 測定の日付・時刻を記録する・期間で絞るとき、どの項目を測定時刻とするか | [measured-time.md](references/measured-time.md) | — | — |
+| 測定がクラウドに上がる時期 | 新しい測定が取れないとき・同期の結果を読むとき、測定がいつRENPHOに上がり、取れないことをどう読むか | [upload-timing.md](references/upload-timing.md) | `measured-time.md`・`session.md` | — |
 | 項目の意味と単位 | 項目を記録先の列に対応付ける・列を足すとき、どのキーが何で、単位は何か。どの項目に列を作るか | [field-units.md](references/field-units.md) | — | — |
-| 1回の測定で残る複数のレコード | 測定を記録する・平均を取るとき、同じ測定の重複をどう畳むか | [session-collapse.md](references/session-collapse.md) | 測定時刻 | — |
+| 1回の測定で残る複数のレコード | 測定を記録する・平均を取るとき、同じ測定の重複をどう畳むか | [session-collapse.md](references/session-collapse.md) | `measured-time.md` | — |
 | 体組成が空のレコード | 測定を記録するとき、体組成が0で返る測定をどう記録するか | [missing-composition.md](references/missing-composition.md) | — | — |
 | レコードIDの持ち方 | 記録先にIDの列を作る・差分を取る処理を書くとき、IDをどの型で持ち、何を一意キーにして重複を防ぐか | [record-id.md](references/record-id.md) | — | — |
-| 非公式APIが壊れたとき | APIが失敗したとき・応答の形が変わったとき、失敗をどう見分け、どこを見て直すか | [unofficial-api.md](references/unofficial-api.md) | 認証情報の扱い | — |
+| 非公式APIが壊れたとき | APIが失敗したとき・応答の形が変わったとき、失敗をどう見分け、どこを見て直すか | [unofficial-api.md](references/unofficial-api.md) | `credentials.md` | — |
 | 設定の不足 | 道具が `RenphoAuthError` を返したとき、どの設定の不足によるものか | [missing-setup.md](references/missing-setup.md) | — | — |
 
 # 手続きに使う道具
@@ -30,8 +31,8 @@ metadata:
 | モジュール | 役割 |
 |---|---|
 | `renpho_api.py` | API通信。暗号化・ログイン・403のときの再ログイン・シャード・ページング・取得先の切り替え・新しい順への並べ替え・エラー |
-| `renpho_env.py` | 認証情報の読み書きと、クライアントの入口 `open_client()` |
-| `renpho_records.py` | レコード → 意味と単位の確定した値。測定時刻・同一測定の集約・欠測の除外・IDの文字列化（値の変換だけ） |
+| `renpho_env.py` | 認証情報の読み書きと、クライアントの入口 `open_client()`。tokenの発行時刻 |
+| `renpho_records.py` | レコード → 意味と単位の確定した値。測定時刻・上がった時刻・同一測定の集約・欠測の除外・IDの文字列化（値の変換だけ） |
 
 ```python
 import os, sys

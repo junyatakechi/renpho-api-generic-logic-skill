@@ -21,7 +21,8 @@ importの仕方は SKILL.md の「手続きに使う道具」にある(ここに
   normalize(record)                                       {"id", "measured_at", "has_body_composition", "values"}。values はRENPHOのキー → 丸めた値で、有効な値だけ
   collapse_sessions(records, window_minutes=SESSION_WINDOW_MIN)   同じ測定の連続したレコードを、最後の1件に集約する
   measured_at(record)                                     測定時刻(JST)
-  has_body_composition(record)                            体組成があるか
+  uploaded_at(record)                                     RENPHOに上がった時刻(JST)。createdAt を UTC+8 として読む。読めなければ None
+  has_body_composition(record)                           体組成があるか
   record_id(record)                                       レコードID(文字列)
   FIELDS / FIELD_KEYS                                     RENPHOのキー・意味・単位・丸めの桁
   SESSION_WINDOW_MIN                                      同じ測定とみなす間隔(分)
@@ -64,6 +65,19 @@ SESSION_WINDOW_MIN = 5
 def measured_at(record):
     """測定時刻(JST)。timeStampだけが信頼できる(references/measured-time.md)。"""
     return datetime.fromtimestamp(record["timeStamp"], JST)
+
+
+# createdAt はタイムゾーンの無い文字列で、UTC+8 の時刻で入っている(references/measured-time.md)。
+CREATED_AT_TZ = timezone(timedelta(hours=8))
+
+
+def uploaded_at(record):
+    """RENPHOに上がった時刻(JST)。測定時刻には使わない(references/measured-time.md)。"""
+    try:
+        at = datetime.strptime(record["createdAt"], "%Y-%m-%d %H:%M:%S")
+    except (KeyError, TypeError, ValueError):
+        return None
+    return at.replace(tzinfo=CREATED_AT_TZ).astimezone(JST)
 
 
 def has_body_composition(record):
