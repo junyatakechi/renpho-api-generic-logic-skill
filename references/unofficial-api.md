@@ -66,8 +66,8 @@ RENPHOに公式APIは無い。叩いているのはRENPHO Healthアプリの内�
 
 | 材料 | 種類 | 必須 | 形 | 無いとき |
 |---|---|---|---|---|
-| 起きたこと | 対象の記録 | ○ | `{"例外": "RenphoAPIError", "code": -114, "msg": "", "message": "..."}`。HTTPステータスか復号の失敗でもよい | 判断できない |
-| 使っているアプリとアカウントの種類 | 導入先の環境 | — | `"RENPHO Health"`/`"旧Renpho"` | RENPHO Health として答える |
+| 起きたこと | 対象の値 | ○ | `{"例外": "RenphoAPIError", "code": -114, "msg": "", "message": "..."}`。HTTPステータスか復号の失敗でもよい | 判断できない |
+| 使っているアプリとアカウントの種類 | 取り決め | — | `"RENPHO Health"`/`"旧Renpho"` | RENPHO Health として答える |
 
 ## 計算
 
