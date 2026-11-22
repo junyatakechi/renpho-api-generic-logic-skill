@@ -2,9 +2,9 @@
 name: renpho-api-generic-logic-skill
 description: "文脈: RENPHO API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.2.7"
-  repository: "https://github.com/junyatakechi/renpho-api-generic-logic-skill"
-  design: "人の判断を切り出すAgent Skillsの設計_v3.6.0"
+  skill-version: "0.2.8"
+  design-name: "人の判断を切り出すAgent Skillsの設計"
+  design-version: "6.0.1"
   design-url: "https://app.notion.com/p/3eaf2fd6925e8102b86fee3b6b3dd5a3"
 ---
 
