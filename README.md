@@ -5,17 +5,21 @@ RENPHO Health（体組成計）の非公式APIを扱うときの、一般的な�
 
 ## 必要なもの
 
-- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview)
+- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) か [Codex](https://developers.openai.com/codex)
 - Python 3.11以上と [uv](https://docs.astral.sh/uv/)
 - RENPHOの体組成計と、RENPHO Healthアプリ（青いアイコン）のアカウント。旧Renphoアプリのアカウントでは動かない
 
 ## インストール
 
+Claude Code では、次のようにクローンする。
+
 ```bash
 git clone https://github.com/junyatakechi/renpho-api-generic-logic-skill.git ~/.claude/skills/renpho-api-generic-logic-skill
 ```
 
-特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/` の中でクローンする。
+Codex では、`~/.claude/skills/` を `~/.agents/skills/` に替えてクローンする。
+
+特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/`（Codex は `<プロジェクト>/.agents/skills/`）の中でクローンする。
 
 ## セットアップ
 
@@ -28,14 +32,14 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic-skill.git ~/.
 
 手順。
 
-1. 認証情報の雛形を作る。プロジェクトのフォルダ直下（Claude Code を起動するフォルダ）の `.env` に `RENPHO_*` の空の行が足される（`.env` が無ければ作られ、他のキーの行はそのまま残る）。以下のコマンドは、どれもプロジェクトのフォルダで実行する。
+1. 認証情報の雛形を作る。プロジェクトのフォルダ直下（AIエージェントを起動するフォルダ）の `.env` に `RENPHO_*` の空の行が足される（`.env` が無ければ作られ、他のキーの行はそのまま残る）。以下のコマンドは、どれもプロジェクトのフォルダで実行する。Codex では、`~/.claude/skills/` を `~/.agents/skills/` に替える。
 
    ```bash
    cd <プロジェクトのフォルダ>
    uv run ~/.claude/skills/renpho-api-generic-logic-skill/scripts/renpho_auth.py init
    ```
 
-2. `.env` をエディタで開き、自分で値を書き込む。**パスワードはClaudeに渡さない。** キーの中身は `.env.example` のコメントにある。
+2. `.env` をエディタで開き、自分で値を書き込む。**パスワードはAIエージェントに渡さない。** キーの中身は `.env.example` のコメントにある。
 
    ```
    RENPHO_EMAIL=<RENPHO Healthのメールアドレス>
@@ -53,7 +57,7 @@ git clone https://github.com/junyatakechi/renpho-api-generic-logic-skill.git ~/.
 ## 使い方
 
 主に、アプリケーションスキルから呼ばれる。
-直接頼むときも、`/renpho-api-generic-logic-skill` で名前を指名する。指名しないと、このスキルは読み込まれない。
+直接頼むときも、`/renpho-api-generic-logic-skill` で名前を指名する。指名しないと、このスキルは読み込まれない。Codex では、例の `/` を `$` に替えて指名する。
 
 - 「/renpho-api-generic-logic-skill RENPHOに繋がるか確かめて」
 - 「/renpho-api-generic-logic-skill RENPHOが返す項目を調べて」
